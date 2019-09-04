@@ -10,10 +10,12 @@ import java.time.Duration
 import java.util.concurrent.TimeUnit
 import kotlin.test.Test
 
+// TODO Refactor tests
+// TODO Add test for build
 class AppTest {
 
     @Test
-    fun serverIsUpAndRunning() {
+    fun ready() {
         main(emptyArray())
         waitUntil({ serverIsUp() }, Duration.ofSeconds(2), Duration.ofMillis(200))
     }

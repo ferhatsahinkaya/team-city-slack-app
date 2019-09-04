@@ -3,14 +3,15 @@
  */
 package teamcity.slack.app
 
-import spark.Spark.get
-import spark.Spark.port
+import spark.Spark.*
 
 fun main(args: Array<String>) {
     port(getPort())
     get("/ready") { _, _ -> 200 }
+    post("/build") { _, _ -> 200 }
 }
 
+// TODO Simplify getPort method
 fun getPort(): Int {
     val processBuilder = ProcessBuilder()
     return if (processBuilder.environment()["PORT"] != null) {
