@@ -4,9 +4,13 @@
  * This generated file contains a sample Kotlin application project to get you started.
  */
 
+import org.gradle.jvm.tasks.Jar
+
 plugins {
     // Apply the Kotlin JVM plugin to add support for Kotlin.
     id("org.jetbrains.kotlin.jvm") version "1.3.41"
+
+    java
 
     // Apply the application plugin to add support for building a CLI application.
     application
@@ -37,4 +41,21 @@ dependencies {
 application {
     // Define the main class for the application
     mainClassName = "teamcity.slack.app.AppKt"
+}
+
+tasks.register<Jar>("uberJar") {
+
+    manifest {
+        attributes["Main-Class"] = application.mainClassName
+    }
+
+    from(sourceSets.main.get().output)
+    dependsOn(configurations.runtimeClasspath)
+    from({
+        configurations.runtimeClasspath.get().filter { it.name.endsWith("jar") }.map { zipTree(it) }
+    })
+}
+
+tasks.build {
+    dependsOn("uberJar")
 }

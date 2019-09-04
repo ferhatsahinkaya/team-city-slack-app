@@ -7,4 +7,4 @@
  * in the user manual at https://docs.gradle.org/5.6.1/userguide/multi_project_builds.html
  */
 
-rootProject.name = "team-city-slack-app"
+rootProject.name = "teamcity-slack-app"
