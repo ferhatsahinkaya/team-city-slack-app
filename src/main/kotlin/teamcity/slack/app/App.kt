@@ -4,7 +4,16 @@
 package teamcity.slack.app
 
 import spark.Spark.get
+import spark.Spark.port
 
 fun main(args: Array<String>) {
+    port(getPort())
     get("/ready") { _, _ -> 200 }
+}
+
+fun getPort(): Int {
+    val processBuilder = ProcessBuilder()
+    return if (processBuilder.environment()["PORT"] != null) {
+        Integer.parseInt(processBuilder.environment()["PORT"])
+    } else 4567
 }
