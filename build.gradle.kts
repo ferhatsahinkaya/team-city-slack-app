@@ -29,13 +29,17 @@ dependencies {
     // Use the Kotlin JDK 8 standard library.
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
-    implementation("com.sparkjava:spark-core:2.9.1")
-
     // Use the Kotlin test library.
     testImplementation("org.jetbrains.kotlin:kotlin-test")
 
     // Use the Kotlin JUnit integration.
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
+
+    implementation("com.sparkjava:spark-core:2.9.1")
+
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.9.9")
+
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.9.9")
 }
 
 application {
