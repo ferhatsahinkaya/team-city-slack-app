@@ -19,9 +19,10 @@ fun main(args: Array<String>) {
                 .filter { it.state.name == req.queryParams("state") }
                 .map { ObjectMapper().writeValueAsString(it) }
     }
-    post("/build") { req, _ ->
+    post("/build") { req, res ->
         val buildId = req.queryParams("text")
         builds.add(Build(buildId, Waiting))
+        res.type("application/json")
         "{\"text\": \"$buildId build will start soon\"}"
     }
     delete("/build") { req, _ ->
