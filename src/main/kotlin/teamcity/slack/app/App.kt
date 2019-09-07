@@ -20,7 +20,9 @@ fun main(args: Array<String>) {
                 .map { ObjectMapper().writeValueAsString(it) }
     }
     post("/build") { req, _ ->
-        builds.add(Build(req.queryParams("text"), Waiting))
+        val buildId = req.queryParams("text")
+        builds.add(Build(buildId, Waiting))
+        "{\"text\": \"$buildId build will start soon\"}"
     }
     delete("/build") { req, _ ->
         builds.removeIf {
