@@ -20,9 +20,7 @@ fun main(args: Array<String>) {
                 .map { ObjectMapper().writeValueAsString(it) }
     }
     post("/build") { req, _ ->
-        builds.add(Build(ObjectMapper()
-                .registerModule(KotlinModule())
-                .readValue(req.body(), BuildId::class.java).id, Waiting))
+        builds.add(Build(req.queryParams("text"), Waiting))
     }
     delete("/build") { req, _ ->
         builds.removeIf {
