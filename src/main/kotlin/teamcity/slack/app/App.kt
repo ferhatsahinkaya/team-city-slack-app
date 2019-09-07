@@ -21,7 +21,7 @@ fun main(args: Array<String>) {
     }
     post("/build") { req, res ->
         val buildId = req.queryParams("text")
-        builds.add(Build(buildId, Waiting))
+        builds.add(Build(buildId, Waiting, req.queryParams("response_url")))
         res.type("application/json")
         "{\"text\": \"$buildId build is added to the build queue\"}"
     }
@@ -34,7 +34,7 @@ fun main(args: Array<String>) {
     }
 }
 
-data class Build(val id: String, val state: BuildState)
+data class Build(val id: String, val state: BuildState, val responseUrl: String)
 
 enum class BuildState {
     Waiting
