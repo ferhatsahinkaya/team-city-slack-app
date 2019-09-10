@@ -23,7 +23,7 @@ fun main(args: Array<String>) {
         val buildId = req.queryParams("text")
         builds.add(Build(buildId, Waiting, req.queryParams("response_url")))
         res.type("application/json")
-        "{\"text\": \"$buildId build is added to the build queue\"}"
+        "{\"text\": \"$buildId build request is accepted and will be processed shortly\"}"
     }
     delete("/build") { req, _ ->
         builds.removeIf {
