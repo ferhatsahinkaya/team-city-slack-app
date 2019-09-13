@@ -7,21 +7,17 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import spark.Spark.*
-import teamcity.slack.app.BuildState.Waiting
 
-// TODO Return sensible http response content
-fun main(args: Array<String>) {
+fun main() {
     val builds = mutableListOf<Build>()
 
     port(getPort())
-    get("/build") { req, _ ->
-        builds
-                .filter { it.state.name == req.queryParams("state") }
-                .map { ObjectMapper().writeValueAsString(it) }
+    get("/build") { _, _ ->
+        builds.map { ObjectMapper().writeValueAsString(it) }
     }
     post("/build") { req, res ->
         val buildId = req.queryParams("text")
-        builds.add(Build(buildId, Waiting, req.queryParams("response_url")))
+        builds.add(Build(buildId, req.queryParams("response_url")))
         res.type("application/json")
         "{\"text\": \"$buildId build request is accepted and will be processed shortly\"}"
     }
@@ -34,11 +30,7 @@ fun main(args: Array<String>) {
     }
 }
 
-data class Build(val id: String, val state: BuildState, val responseUrl: String)
-
-enum class BuildState {
-    Waiting
-}
+data class Build(val id: String, val responseUrl: String)
 
 @JacksonXmlRootElement
 data class BuildId(val id: String)
