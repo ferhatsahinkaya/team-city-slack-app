@@ -9,28 +9,39 @@ import com.fasterxml.jackson.module.kotlin.KotlinModule
 import spark.Spark.*
 
 fun main() {
-    val builds = mutableListOf<Build>()
+    val buildRequests = mutableListOf<BuildRequest>()
+    val cancelRequests = mutableListOf<CancelRequest>()
 
     port(getPort())
     get("/build") { _, _ ->
-        builds.map { ObjectMapper().writeValueAsString(it) }
+        buildRequests.map { ObjectMapper().writeValueAsString(it) }
     }
     post("/build") { req, res ->
         val buildId = req.queryParams("text")
-        builds.add(Build(buildId, req.queryParams("response_url")))
+        buildRequests.add(BuildRequest(buildId, req.queryParams("response_url")))
         res.type("application/json")
         "{\"text\": \"$buildId build request is accepted and will be processed shortly\"}"
     }
     delete("/build") { req, _ ->
-        builds.removeIf {
+        buildRequests.removeIf {
             it.id == ObjectMapper()
                     .registerModule(KotlinModule())
                     .readValue(req.body(), BuildId::class.java).id
         }
     }
+    get("/cancel") { _, _ ->
+        cancelRequests.map { ObjectMapper().writeValueAsString(it) }
+    }
+    post("/cancel") { req, res ->
+        val buildId = req.queryParams("text")
+        cancelRequests.add(CancelRequest(buildId))
+        res.type("application/json")
+        "{\"text\": \"$buildId cancel request is accepted and will be processed shortly\"}"
+    }
 }
 
-data class Build(val id: String, val responseUrl: String)
+data class BuildRequest(val id: String, val responseUrl: String)
+data class CancelRequest(val id: String)
 
 @JacksonXmlRootElement
 data class BuildId(val id: String)
