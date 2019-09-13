@@ -34,14 +34,14 @@ fun main() {
     }
     post("/cancel") { req, res ->
         val buildId = req.queryParams("text")
-        cancelRequests.add(CancelRequest(buildId))
+        cancelRequests.add(CancelRequest(buildId, req.queryParams("response_url")))
         res.type("application/json")
         "{\"text\": \"$buildId cancel request is accepted and will be processed shortly\"}"
     }
 }
 
 data class BuildRequest(val id: String, val responseUrl: String)
-data class CancelRequest(val id: String)
+data class CancelRequest(val id: String, val responseUrl: String)
 
 @JacksonXmlRootElement
 data class BuildId(val id: String)
