@@ -13,6 +13,7 @@ fun main() {
     val cancelRequests = mutableListOf<CancelRequest>()
 
     port(getPort())
+
     get("/build") { _, _ ->
         buildRequests.map { ObjectMapper().writeValueAsString(it) }
     }
@@ -29,6 +30,7 @@ fun main() {
                     .readValue(req.body(), BuildId::class.java).id
         }
     }
+
     get("/cancel") { _, _ ->
         cancelRequests.map { ObjectMapper().writeValueAsString(it) }
     }
@@ -37,6 +39,13 @@ fun main() {
         cancelRequests.add(CancelRequest(buildId, req.queryParams("response_url")))
         res.type("application/json")
         "{\"text\": \"$buildId cancel request is accepted and will be processed shortly\"}"
+    }
+    delete("/cancel") { req, _ ->
+        cancelRequests.removeIf {
+            it.id == ObjectMapper()
+                    .registerModule(KotlinModule())
+                    .readValue(req.body(), BuildId::class.java).id
+        }
     }
 }
 
