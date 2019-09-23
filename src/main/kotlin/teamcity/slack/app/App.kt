@@ -11,6 +11,7 @@ import spark.Spark.*
 fun main() {
     val buildRequests = mutableListOf<BuildRequest>()
     val cancelRequests = mutableListOf<CancelRequest>()
+    val stateRequests = mutableListOf<StateRequest>()
 
     port(getPort())
 
@@ -47,12 +48,34 @@ fun main() {
                     .readValue(req.body(), BuildId::class.java).id
         }
     }
+
+    get("/state") { _, _ ->
+        stateRequests.map { ObjectMapper().writeValueAsString(it) }
+    }
+    post("/state") { req, res ->
+        val groupId = req.queryParams("text")
+        stateRequests.add(StateRequest(groupId, req.queryParams("response_url")))
+        res.type("application/json")
+        "{\"text\": \"$groupId state request is accepted and will be processed shortly\"}"
+    }
+    delete("/state") { req, _ ->
+        stateRequests.removeIf {
+            it.id == ObjectMapper()
+                    .registerModule(KotlinModule())
+                    .readValue(req.body(), GroupId::class.java).id
+        }
+    }
+
 }
 
 data class BuildRequest(val id: String, val responseUrl: String)
 data class CancelRequest(val id: String, val responseUrl: String)
+data class StateRequest(val id: String, val responseUrl: String)
 
 @JacksonXmlRootElement
 data class BuildId(val id: String)
+
+@JacksonXmlRootElement
+data class GroupId(val id: String)
 
 fun getPort() = ProcessBuilder().environment()["PORT"]?.toInt() ?: 4567
